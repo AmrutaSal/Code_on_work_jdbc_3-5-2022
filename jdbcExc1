@@ -1,0 +1,118 @@
+/*1.	Write a Java program to display the employee id, age, first name and last name using JDBC connectivity.
+Expected Output:
+ID: 100, Age: 23, First: Raj, Last: Sharma
+ID: 101, Age: 24, First: Bala, Last: Singh
+ID: 102, Age: 25, First: Anu, Last: Priya
+ID: 103, Age: 26, First: Riya, Last: Khan
+Create database jdbcexercises
+Use jdbcexercises
+Create table Employees 
+(
+	Empid int primary key,
+	Age int not null,
+	Firstname nvarchar(250) not null,
+	Lastname nvarchar(250) not null
+);
+insert the following rows
+Test Data: ( In Database )
+ID: 100, Age: 23, First: Raj, Last: Sharma
+ID: 101, Age: 24, First: Bala, Last: Singh
+ID: 102, Age: 25, First: Anu, Last: Priya
+ID: 103, Age: 26, First: Riya, Last: Khan
+*/
+
+package com.jdbcExercise;
+
+//STEP 1. Import required packages
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class jdbcExc1 {
+                    
+	   static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+	   static final String DB_URL = "jdbc:mysql://localhost:3306/jdbc1exercises";
+       
+	   static final String USER = "root";
+	   static final String PASS = "@mrutA1999";
+	 
+	   public static void main(String [] arg) {
+		   
+		   Connection conn = null;
+		   Statement stmt = null;
+		  
+		   try {
+			   
+			      //STEP 2: Register JDBC driver
+			   
+			   Class.forName(JDBC_DRIVER);
+
+			      //STEP 3: Open a connection
+			   
+			   System.out.println("Connecting to database...");
+			   conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			   
+			      //STEP 4: Execute a query
+
+			   System.out.println("Creating statement...");
+			   stmt = conn.createStatement();
+			   
+			   String sql;
+			   sql = "SELECT Empid, Age, Firstname, Lastname FROM Employees";
+			   
+			   ResultSet rs = stmt.executeQuery(sql);
+			   
+			      //STEP 5: Extract data from result set
+
+			   while(rs.next()){
+			         //Retrieve by column name
+			         int id  = rs.getInt("Empid");
+			         int age = rs.getInt("Age");
+			         String first = rs.getString("Firstname");
+			         String last = rs.getString("Lastname");
+	
+			         //Display values
+			         System.out.println("*********************************");
+			         System.out.println("ID: " + id);
+			         System.out.println("Age: " + age);
+			         System.out.println("First Name: " + first);
+			         System.out.println("Last Name: " + last);
+			      }
+			   
+			       rs.close();
+			   
+	     	   }
+		       
+		         catch(SQLException se){
+			      //Handle errors for JDBC
+			      se.printStackTrace();
+			     }
+		         catch(ClassNotFoundException e){
+			      //Handle errors for Class.forName
+			      e.printStackTrace();
+			     }
+		       
+		         finally{
+			      //finally block used to close resources
+			      try{
+			         if(stmt!=null)
+			            stmt.close();
+			          }
+			      catch(SQLException se2){
+			      }
+			      // nothing we can do
+			      try
+			       {
+			         if(conn!=null)
+			            conn.close();
+			      }
+			      catch(SQLException se){
+			         se.printStackTrace();
+			      }//end finally try
+			
+			     }
+	   }
+}
