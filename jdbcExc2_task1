@@ -1,0 +1,121 @@
+/*Task 1
+Using the JDBC API and any relational database (e.g. MySQL) make the following queries:
+•	create a table MOVIES with columns: id of type INTEGER AUTO INCREMENT, title of type VARCHAR (255), genre of type VARCHAR (255), yearOfRelease of type INTEGER. 
+•	add any three records to the MOVIES table
+•	update one selected record (use the PreparedStatement)
+•	delete selected record with specified id
+•	display all other records in the database
+In the task, focus on the correct use of the JDBC API. 
+All queries can be made directly in the main method. 
+Use a single connection to execute all queries. 
+However, remember to use try-with-resources when opening a connection and creating objects such as Statement or PreparedStatement. 
+*/
+
+
+package com.jdbcExercise;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class jdbcExc2_task1 {
+	
+	public static void main(String[] arg) throws ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		try(Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc1exercises","root","@mrutA1999");)
+		{	
+			
+      //Create table		
+		
+       try(Statement createTable = con.createStatement();){
+		
+		String createTableQuery = "CREATE TABLE MOVIES( id INTEGER AUTO_INCREMENT,"+"title VARCHAR(255),"+
+		                           "genre VARCHAR(255) , "+ "yearOfRelease INTEGER, "+"PRIMARY KEY (id))";
+		
+		createTable.execute(createTableQuery);
+				                                                
+        }
+          catch(SQLException ex) {
+		       ex.printStackTrace();
+        }
+
+
+      //Insert show
+
+        try(Statement insertTable = con.createStatement();){
+		
+		String insertTableQuery = "INSERT MOVIES VALUES ((1,'Bhool Bhulaiyaa 2','horror',2022),"
+				+ "(2,'A Fairy Tale After All','puppet',2022),"
+				+ "(3,'The Family Man','fantasy',2000)";
+		
+		insertTable.execute(insertTableQuery);
+				// ('A Fairy Tale After All','fantasy',2022),()
+        }
+ 
+        catch(SQLException ex) {
+		ex.printStackTrace();
+         }
+
+
+         //update preparedStatement
+		
+       try(PreparedStatement updateStatement = con.prepareStatement("UPDATE MOVIES SET title = ? where id = ?");){
+		
+	     // String updateStatementquery = "UPDATE MOVIES SET title = ? where id = ?";
+	    	
+    	   updateStatement.setString(1,"Bhool Bhulaiyaa ");
+    	   updateStatement.setInt(2, 1);
+    	   updateStatement.executeUpdate();
+    	   
+        }
+       catch(SQLException ex) {
+   		ex.printStackTrace();
+            }
+
+
+      //delete statement
+       
+       try(Statement deleteStatement = con.createStatement();){
+    	   
+    	  String deleteStatementQuery = "Delete from movies where id = 2";
+    	  
+    	  deleteStatement.execute(deleteStatementQuery);
+       }
+		
+		
+        //Read statement
+
+        try(Statement readStatement=con.createStatement()){
+		
+		String readQuery = "SELECT * FROM MOVIES";
+		ResultSet rs = readStatement.executeQuery(readQuery);
+		
+		while(rs.next()) {
+			int id =rs.getInt("id");
+			String title = rs.getString("title");
+			String genre = rs.getString("genre");
+			int yearOfRelease = rs.getInt("yearOfRelease");
+			
+			System.out.println("*********************************************");
+			System.out.println("Id : "+id);
+			System.out.println("Title : "+title);
+			System.out.println("Genre : "+genre);
+			System.out.println("Year of release :"+yearOfRelease);
+		
+	           	 }
+    	}
+		catch(SQLException ex) {
+			ex.printStackTrace();
+		}
+     }
+        catch(SQLException ex) {
+		        ex.printStackTrace();
+         }
+		
+       }
+
+   }
