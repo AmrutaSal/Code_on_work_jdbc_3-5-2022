@@ -1,0 +1,37 @@
+Create database jdbc1exercises;
+use jdbc1exercises;
+
+Create table Employees 
+(
+	Empid int primary key,
+	Age int not null,
+	Firstname nvarchar(250) not null,
+	Lastname nvarchar(250) not null
+);
+
+insert Employees values
+(100,23, 'Raj', 'Sharma'),
+(101,24,'Bala','Singh'),
+(102,25,'Anu','Priya'),
+(103,26,'Riya','Khan');
+
+select * from employees;
+
+create table movies 
+(
+	id integer auto_increment,
+    title varchar(255),
+    genre varchar(255),
+    yearOfRelease integer,
+    primary key(id)
+    
+);
+
+INSERT MOVIES VALUES 
+(1,'Bhool Bhulaiyaa 2','horror',2022),
+(2,'A Fairy Tale After All','puppet',2022),
+(3,'The Family Man','fantasy',2000);
+
+
+select * from movies;
+
